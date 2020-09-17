@@ -1,44 +1,68 @@
 package com.oktenweb.javaadvanced.controller;
 
+import com.oktenweb.javaadvanced.dao.MovieDao;
 import com.oktenweb.javaadvanced.entity.Movie;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/movies")
 public class MovieController {
 
-    private List<Movie> movies = new ArrayList<>();
+    private MovieDao movieDao;
 
-    {
-        movies.add(new Movie(1, "LoTR: TFoF", 125));
-        movies.add(new Movie(2, "Harry Potter: GoF", 110));
+    @Autowired
+    public MovieController(MovieDao movieDao) {
+        this.movieDao = movieDao;
     }
 
-    //    @RequestMapping(value = "/movies", method = RequestMethod.GET)
-    @GetMapping(value = "/movies")
+    //@RequestMapping(value = "/movies", method = RequestMethod.GET)
+    @GetMapping
     public List<Movie> getMovies() {
-        return movies;
+        return movieDao.findAll();
     }
 
-    @GetMapping(value = "/movies/{id}")
+    @GetMapping(value = "/{id}")
     public Movie getMovie(@PathVariable int id) {
-        return movies.stream()
-                .filter(movie -> movie.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("No such movie"));
+        return movieDao.findById(id).orElseThrow(() -> new RuntimeException("No movie with id: " + id));
     }
 
-    @PostMapping(value = "/movies")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Movie insertMovie(@RequestBody Movie movie) {
-        movies.add(movie);
+        movieDao.save(movie);
         return movie;
     }
-}
 
+    @PutMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Movie updateMovie(@PathVariable int id, @RequestBody Movie movie) {
+        movie.setId(id);
+        movieDao.save(movie);
+        return movie;
+
+//        //todo: getOne explore
+//        Movie one = movieDao.getOne(id);
+//        one.setDuration(movie.getDuration());
+//        one.setTitle(movie.getTitle());
+//        movieDao.flush();
+//        return movie;
+    }
+
+    @DeleteMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMovie(@PathVariable int id) {
+        movieDao.deleteById(id);
+    }
+}
