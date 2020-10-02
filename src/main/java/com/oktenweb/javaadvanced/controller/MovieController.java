@@ -1,11 +1,14 @@
 package com.oktenweb.javaadvanced.controller;
 
-import com.oktenweb.javaadvanced.dao.MovieDao;
 import com.oktenweb.javaadvanced.entity.Movie;
+import com.oktenweb.javaadvanced.service.IMovieService;
+import com.oktenweb.javaadvanced.validator.MovieValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,54 +18,56 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/movies")
 public class MovieController {
 
-    private MovieDao movieDao;
+    private IMovieService movieService;
+    private MovieValidator movieValidator;
 
     @Autowired
-    public MovieController(MovieDao movieDao) {
-        this.movieDao = movieDao;
+    public MovieController(IMovieService movieService,
+        MovieValidator movieValidator) {
+        this.movieService = movieService;
+        this.movieValidator = movieValidator;
     }
 
     //@RequestMapping(value = "/movies", method = RequestMethod.GET)
     @GetMapping
     public List<Movie> getMovies() {
-        return movieDao.findAll();
+        return movieService.getAllMovies();
     }
 
     @GetMapping(value = "/{id}")
     public Movie getMovie(@PathVariable int id) {
-        return movieDao.findById(id).orElseThrow(() -> new RuntimeException("No movie with id: " + id));
+        return movieService.getMovie(id);
+
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Movie insertMovie(@RequestBody Movie movie) {
-        movieDao.save(movie);
-        return movie;
+    public Movie insertMovie(@RequestBody @Valid Movie movie) {
+        return movieService.insertMovie(movie);
     }
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Movie updateMovie(@PathVariable int id, @RequestBody Movie movie) {
         movie.setId(id);
-        movieDao.save(movie);
-        return movie;
-
-//        //todo: getOne explore
-//        Movie one = movieDao.getOne(id);
-//        one.setDuration(movie.getDuration());
-//        one.setTitle(movie.getTitle());
-//        movieDao.flush();
-//        return movie;
+        return movieService.updateMovie(movie);
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMovie(@PathVariable int id) {
-        movieDao.deleteById(id);
+        movieService.removeMovie(id);
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder webDataBinder) {
+//        webDataBinder.addValidators(new MovieValidator());
+        webDataBinder.addValidators(movieValidator);
     }
 }
