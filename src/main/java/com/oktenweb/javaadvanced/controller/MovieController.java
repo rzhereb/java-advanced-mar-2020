@@ -3,7 +3,11 @@ package com.oktenweb.javaadvanced.controller;
 import com.oktenweb.javaadvanced.entity.Movie;
 import com.oktenweb.javaadvanced.service.IMovieService;
 import com.oktenweb.javaadvanced.validator.MovieValidator;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,16 +26,17 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/movies")
+@Slf4j
 public class MovieController {
 
+    @Qualifier(value = "movieService")
     private IMovieService movieService;
-    private MovieValidator movieValidator;
+//    private MovieValidator movieValidator;
 
     @Autowired
-    public MovieController(IMovieService movieService,
-        MovieValidator movieValidator) {
+    public MovieController(IMovieService movieService) {
         this.movieService = movieService;
-        this.movieValidator = movieValidator;
+//        this.movieValidator = movieValidator;
     }
 
     //@RequestMapping(value = "/movies", method = RequestMethod.GET)
@@ -49,6 +54,7 @@ public class MovieController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Movie insertMovie(@RequestBody @Valid Movie movie) {
+        log.info("Handling POST /movie with object: " + movie);
         return movieService.insertMovie(movie);
     }
 
@@ -65,9 +71,9 @@ public class MovieController {
         movieService.removeMovie(id);
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder webDataBinder) {
-//        webDataBinder.addValidators(new MovieValidator());
-        webDataBinder.addValidators(movieValidator);
-    }
+//    @InitBinder
+//    public void initBinder(WebDataBinder webDataBinder) {
+////        webDataBinder.addValidators(new MovieValidator());
+//        webDataBinder.addValidators(movieValidator);
+//    }
 }

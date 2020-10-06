@@ -1,6 +1,7 @@
 package com.oktenweb.javaadvanced.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.oktenweb.javaadvanced.validator.UniqueMovieTitle;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;

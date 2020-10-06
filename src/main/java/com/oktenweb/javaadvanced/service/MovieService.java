@@ -2,6 +2,7 @@ package com.oktenweb.javaadvanced.service;
 
 import com.oktenweb.javaadvanced.dao.MovieDao;
 import com.oktenweb.javaadvanced.entity.Movie;
+import com.oktenweb.javaadvanced.exception.CapitalLetterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,7 @@ public class MovieService implements IMovieService {
   @Override
   public Movie insertMovie(Movie movie) {
     if (movie.getTitle().charAt(0) < 65 || movie.getTitle().charAt(0) > 90) {
-      //todo: rewrite in Exception Handling lesson
-      throw new RuntimeException("Title should start with capital letter");
+      throw new CapitalLetterException("Title should start with capital letter");
     }
     return movieDao.save(movie);
   }

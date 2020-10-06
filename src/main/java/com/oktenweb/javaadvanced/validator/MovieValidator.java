@@ -5,8 +5,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import javax.validation.Valid;
-
 @Component
 public class MovieValidator implements Validator {
 
@@ -16,7 +14,7 @@ public class MovieValidator implements Validator {
   }
 
   @Override
-  public void validate(@Valid Object o, Errors errors) {
+  public void validate(Object o, Errors errors) {
     Movie movie = (Movie) o;
     if (movie.getTitle() != null && movie.getTitle().trim().length() > 0) {
       if (movie.getTitle().charAt(0) < 65 || movie.getTitle().charAt(0) > 90) {
@@ -24,7 +22,6 @@ public class MovieValidator implements Validator {
             "Title must start with capital letter");
       }
     }
-
 
   }
 }
