@@ -1,18 +1,14 @@
 package com.oktenweb.javaadvanced.controller;
 
+import com.oktenweb.javaadvanced.dto.MovieDTO;
 import com.oktenweb.javaadvanced.entity.Movie;
 import com.oktenweb.javaadvanced.service.IMovieService;
-import com.oktenweb.javaadvanced.validator.MovieValidator;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -51,11 +47,11 @@ public class MovieController {
 
     }
 
-    @PostMapping
+    @PostMapping(value = "/directors/{directorId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Movie insertMovie(@RequestBody @Valid Movie movie) {
+    public MovieDTO insertMovie(@RequestBody @Valid Movie movie, @PathVariable int directorId) {
         log.info("Handling POST /movie with object: " + movie);
-        return movieService.insertMovie(movie);
+        return movieService.insertMovie(movie, directorId);
     }
 
     @PutMapping(value = "/{id}")

@@ -1,8 +1,12 @@
-package com.oktenweb.javaadvanced.service;
+package com.oktenweb.javaadvanced.service.impl;
 
+import com.oktenweb.javaadvanced.dao.DirectorDao;
 import com.oktenweb.javaadvanced.dao.MovieDao;
+import com.oktenweb.javaadvanced.dto.MovieDTO;
+import com.oktenweb.javaadvanced.entity.Director;
 import com.oktenweb.javaadvanced.entity.Movie;
 import com.oktenweb.javaadvanced.exception.CapitalLetterException;
+import com.oktenweb.javaadvanced.service.IMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +18,18 @@ public class MovieService implements IMovieService {
   @Autowired
   private MovieDao movieDao;
 
+  @Autowired
+  private DirectorDao directorDao;
+
   @Override
-  public Movie insertMovie(Movie movie) {
+  public MovieDTO insertMovie(Movie movie, int directorId) {
     if (movie.getTitle().charAt(0) < 65 || movie.getTitle().charAt(0) > 90) {
       throw new CapitalLetterException("Title should start with capital letter");
     }
-    return movieDao.save(movie);
+    final Director director = directorDao.getOne(directorId);
+    movie.setDirector(director);
+    movie = movieDao.save(movie);
+    return new MovieDTO(movie.getId(), movie.getTitle(), movie.getDuration(), director.getName());
   }
 
   @Override

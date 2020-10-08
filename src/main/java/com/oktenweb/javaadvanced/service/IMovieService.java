@@ -1,12 +1,13 @@
 package com.oktenweb.javaadvanced.service;
 
+import com.oktenweb.javaadvanced.dto.MovieDTO;
 import com.oktenweb.javaadvanced.entity.Movie;
 
 import java.util.List;
 
 public interface IMovieService {
 
-  Movie insertMovie(Movie movie);
+  MovieDTO insertMovie(Movie movie, int directorId);
 
   List<Movie> getAllMovies();
 
