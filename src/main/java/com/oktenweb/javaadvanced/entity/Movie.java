@@ -37,8 +37,16 @@ public class Movie {
     @Max(200)
     private int duration;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private Director director;
 
+    @Override
+    public String toString() {
+        return "Movie{" +
+            "id=" + id +
+            ", title='" + title + '\'' +
+            ", duration=" + duration +
+            '}';
+    }
 }

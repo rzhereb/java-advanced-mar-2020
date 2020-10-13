@@ -16,4 +16,5 @@ public interface IDirectorService {
 
   void remove(int id);
 
+  Director getDirectorByName(String name);
 }

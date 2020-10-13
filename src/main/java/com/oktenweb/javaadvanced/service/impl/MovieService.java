@@ -3,11 +3,14 @@ package com.oktenweb.javaadvanced.service.impl;
 import com.oktenweb.javaadvanced.dao.DirectorDao;
 import com.oktenweb.javaadvanced.dao.MovieDao;
 import com.oktenweb.javaadvanced.dto.MovieDTO;
+import com.oktenweb.javaadvanced.dto.MoviePageDTO;
 import com.oktenweb.javaadvanced.entity.Director;
 import com.oktenweb.javaadvanced.entity.Movie;
 import com.oktenweb.javaadvanced.exception.CapitalLetterException;
 import com.oktenweb.javaadvanced.service.IMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +36,10 @@ public class MovieService implements IMovieService {
   }
 
   @Override
-  public List<Movie> getAllMovies() {
-    return movieDao.findAll();
+  public MoviePageDTO getAllMovies(PageRequest pageRequest) {
+    final Page<Movie> all = movieDao.findAll(pageRequest);
+
+    return new MoviePageDTO(all.getContent(), all.getTotalElements(), all.getSize(), all.isEmpty());
   }
 
   @Override
@@ -51,5 +56,10 @@ public class MovieService implements IMovieService {
   @Override
   public void removeMovie(int id) {
     movieDao.deleteById(id);
+  }
+
+  @Override
+  public List<Movie> getMoviesByDirectorName(String name) {
+    return movieDao.findByDirectorName(name);
   }
 }

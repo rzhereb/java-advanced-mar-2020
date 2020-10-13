@@ -37,7 +37,6 @@ public class Director {
 
   @OneToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "director_id")
-  @JsonIgnore
-  private Set<Movie> movies ;
+  private List<Movie> movies;
 
 }
