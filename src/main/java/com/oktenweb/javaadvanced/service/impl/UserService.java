@@ -4,6 +4,7 @@ import com.oktenweb.javaadvanced.dao.IUserDao;
 import com.oktenweb.javaadvanced.entity.User;
 import com.oktenweb.javaadvanced.service.IUserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,12 +13,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 public class UserService implements UserDetailsService, IUserService {
 
+  @Autowired
   private IUserDao userDao;
 
   // Цей бін ми описали на SecurityConfig
+  @Autowired
   private PasswordEncoder passwordEncoder;
 
   @Override
