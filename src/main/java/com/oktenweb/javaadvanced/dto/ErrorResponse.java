@@ -1,4 +1,4 @@
-package com.oktenweb.javaadvanced.controller;
+package com.oktenweb.javaadvanced.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

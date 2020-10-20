@@ -1,5 +1,6 @@
 package com.oktenweb.javaadvanced.controller;
 
+import com.oktenweb.javaadvanced.dto.ErrorResponse;
 import com.oktenweb.javaadvanced.exception.CapitalLetterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
