@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 import javax.validation.Valid;
 
@@ -42,7 +43,7 @@ public class MovieController {
   //@RequestMapping(value = "/movies", method = RequestMethod.GET)
   @GetMapping
   public MoviePageDTO getMovies(@RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "3") int size) {
+      @RequestParam(defaultValue = "3") int size, Principal principal) {
       final PageRequest pageRequest = PageRequest.of(page, size);
       return movieService.getAllMovies(pageRequest);
   }
