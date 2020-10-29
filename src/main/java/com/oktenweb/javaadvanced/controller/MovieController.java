@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import javax.validation.Valid;
@@ -51,20 +55,37 @@ public class MovieController {
   public Movie getMovie(@PathVariable int id) {
     final Movie movie = movieService.getMovie(id);
     return movie;
-
   }
 
   @GetMapping("/name/{name}")
   public List<Movie> getMovies(@PathVariable String name) {
     return movieService.getMoviesByDirectorName(name);
-
   }
 
-  @PostMapping(value = "/directors/{directorId}")
+  @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+  public ResponseEntity<byte[]> getMovieImage(@PathVariable int id) {
+    return ResponseEntity.ok().body(movieService.getMovieImage(id));
+  }
+
+  // Code for RSS:
+//
+//  String feedUrl = "https://stackoverflow.com/feeds";
+//  RestTemplate restTemplate = new RestTemplate();
+//  SyndFeed syndFeed = restTemplate.execute(feedUrl, HttpMethod.GET, null, response -> {
+//    SyndFeedInput input = new SyndFeedInput();
+//    try {
+//      return input.build(new XmlReader(response.getBody()));
+//    } catch (FeedException e) {
+//      throw new IOException("Could not parse response", e);
+//    }
+//  });
+
+  @PostMapping(value = "/directors/{directorId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
-  public MovieDTO insertMovie(@RequestBody @Valid Movie movie, @PathVariable int directorId) {
+  public MovieDTO insertMovie(@ModelAttribute @Valid Movie movie, @PathVariable int directorId,
+      @RequestParam(required = false) MultipartFile file) {
     log.info("Handling POST /movie with object: " + movie);
-    return movieService.insertMovie(movie, directorId);
+    return movieService.insertMovie(movie, file, directorId);
   }
 
   @PutMapping(value = "/{id}")

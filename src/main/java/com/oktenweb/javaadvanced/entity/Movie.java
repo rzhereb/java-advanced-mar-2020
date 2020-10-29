@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
@@ -36,6 +37,9 @@ public class Movie {
     @Positive
     @Max(200)
     private int duration;
+
+    @Lob
+    private byte[] data;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
